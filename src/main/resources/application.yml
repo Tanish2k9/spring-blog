@@ -13,8 +13,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-secreteJwtString: BF7FD11ACE545745B7BA1AF98B6F156D127BC7BB544BAB6A4FD74E4FC7
+secreteJwtString: *******************
 cloudinary:
-  cloud_name: dlajn1bd5
-  api_key: 126634768675556
-  api_secret: Mv2lELYi8M47n8z8udP_kUydpZY
+  cloud_name: ******************
+  api_key: ********************
+  api_secret: *************************
