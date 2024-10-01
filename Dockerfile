@@ -3,7 +3,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 FROM openjdk:17.0.1-jdk-slim
-COPY --from=build /target/Blog-springboot-0.0.1-SNAPSHOT.jar Blog-springboot
+COPY --from=build /target/*.jar demo.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","Blog-springboot.jar"]
+ENTRYPOINT ["java","-jar","demo.jar"]
 
