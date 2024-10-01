@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
-
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest){
         System.out.println(registrationRequest);
