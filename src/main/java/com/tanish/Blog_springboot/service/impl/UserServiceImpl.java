@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +27,17 @@ public class UserServiceImpl implements UserService {
     private final EntityDtoMapper entityDtoMapper;
     @Override
     public ApiResponse<UserDto> registerUser(RegistrationRequest registrationRequest) {
+
+       Optional<User> optionalUser= userRepo.findByEmail(registrationRequest.getEmail());
+       Optional<User> optionalUsername= userRepo.findByUserName(registrationRequest.getUsername());
+       if(optionalUser.isPresent()){
+           throw new RuntimeException("Email Already Exist");
+       }
+       if(optionalUsername.isPresent()){
+           throw new RuntimeException("Username Already Taken");
+       }
+
         UserRole role = UserRole.USER;
-
-//        if (registrationRequest.getRole() != null && registrationRequest.getRole().equalsIgnoreCase("admin")) {
-//            role = UserRole.ADMIN;
-//        }
-
         User user = User.builder()
                 .userName(registrationRequest.getUsername())
                 .email(registrationRequest.getEmail())
@@ -40,7 +46,6 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         User savedUser = userRepo.save(user);
-//        System.out.println(savedUser);
 
         UserDto userDto = entityDtoMapper.mapUserToUserDto(savedUser);
         return ApiResponse.<UserDto>builder()
@@ -56,7 +61,7 @@ public class UserServiceImpl implements UserService {
     public ApiResponse<LoginResponse> loginUser(LoginRequest loginRequest) {
         User user = userRepo.findByEmail(loginRequest.getEmail()).orElseThrow(()-> new NotFoundException("Email not found"));
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
-            throw new InvalidCredentialsException("Password does not match");
+            throw new InvalidCredentialsException("Invalid password");
         }
 
         String token = jwtUtils.generateToken(user);
